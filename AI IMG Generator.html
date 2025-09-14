@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="max-w-xl w-full bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
+        <div class="text-center space-y-2">
+            <h1 class="text-3xl md:text-4xl font-bold">Image Generator</h1>
+            <p class="text-sm md:text-base text-gray-400">Describe the image you want to create.</p>
+        </div>
+
+        <div class="space-y-4">
+            <textarea id="promptInput" rows="4" class="w-full p-3 rounded-xl border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none" placeholder="A futuristic city at sunset, cyberpunk style..."></textarea>
+
+            <button id="generateBtn" class="w-full py-3 px-4 rounded-xl font-semibold bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                Generate Image
+            </button>
+        </div>
+
+        <div id="loading" class="hidden flex justify-center items-center py-6">
+            <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+
+        <div id="imageContainer" class="hidden">
+            <img id="generatedImage" class="w-full rounded-xl shadow-lg border border-gray-700 aspect-square object-cover" src="" alt="Generated image">
+        </div>
+
+        <div id="error-message" class="hidden text-center text-sm text-red-400"></div>
+    </div>
+
+    <script>
+        const promptInput = document.getElementById('promptInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const loadingDiv = document.getElementById('loading');
+        const imageContainer = document.getElementById('imageContainer');
+        const generatedImage = document.getElementById('generatedImage');
+        const errorMessage = document.getElementById('error-message');
+
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+        // Function to show/hide loading state
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loadingDiv.classList.remove('hidden');
+                generateBtn.disabled = true;
+                imageContainer.classList.add('hidden');
+                errorMessage.classList.add('hidden');
+            } else {
+                loadingDiv.classList.add('hidden');
+                generateBtn.disabled = false;
+            }
+        }
+
+        // Function to handle errors
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Handle button click
+        generateBtn.addEventListener('click', async () => {
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                showError("Please enter a text prompt to generate an image.");
+                return;
+            }
+
+            setLoading(true);
+
+            const payload = {
+                instances: {
+                    prompt: prompt
+                },
+                parameters: {
+                    sampleCount: 1
+                }
+            };
+
+            let retries = 0;
+            const maxRetries = 3;
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
+
+                    if (base64Data) {
+                        generatedImage.src = `data:image/png;base64,${base64Data}`;
+                        imageContainer.classList.remove('hidden');
+                        break;
+                    } else {
+                        throw new Error('No image data received from the API.');
+                    }
+
+                } catch (error) {
+                    console.error('Error generating image:', error);
+                    retries++;
+                    if (retries < maxRetries) {
+                        // Exponential backoff
+                        const delay = Math.pow(2, retries) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        showError("Failed to generate image after multiple attempts. Please try again later.");
+                    }
+                } finally {
+                    setLoading(false);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
