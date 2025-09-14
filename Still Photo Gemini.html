@@ -82,20 +82,20 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-3xl font-bold text-center mb-4">Generate a Still Photo</h1>
+        <h1 class="text-3xl font-bold text-center mb-2">Generate a Still Photo</h1>
         
         <!-- Image Reference Section -->
-        <div id="drop-zone" class="p-8 md:p-12 rounded-lg cursor-pointer flex flex-col items-center justify-center mb-6">
+        <div id="drop-zone" class="p-8 md:p-12 rounded-lg cursor-pointer flex flex-col items-center justify-center mt-4 mb-2">
             <svg class="w-16 h-16 text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
             <p class="text-gray-300 font-semibold mb-2">Drag and drop an image here</p>
             <p class="text-gray-500 text-sm mb-4">or click to upload</p>
             <input type="file" id="file-input" class="hidden" accept="image/*">
         </div>
-        <div id="image-container" class="mt-8 hidden">
+        <div id="image-container" class="mt-2 hidden">
             <img id="preview-image" src="" alt="Dropped Image" class="rounded-lg shadow-lg">
         </div>
         
-        <div class="flex flex-col gap-4 my-4">
+        <div class="flex flex-col gap-4 mt-4">
             <div>
                 <label for="styleCategorySelect" class="block text-gray-200 font-semibold mb-2">Style Prompts</label>
                 <select id="styleCategorySelect" class="w-full p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -124,7 +124,7 @@
             </div>
         </div>
 
-        <button id="generateBtn" class="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300" disabled>
+        <button id="generateBtn" class="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300">
             Generate Photo
         </button>
 
