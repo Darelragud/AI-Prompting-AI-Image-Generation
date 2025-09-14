@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directing Prompts Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    <div class="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2 text-center text-gray-900">Directing Prompts</h1>
+        <p class="text-center text-gray-600 mb-8">
+            Explore 250 film directing prompts across five categories.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <button id="allBtn" class="filter-btn bg-gray-900 text-white font-semibold py-2 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                All
+            </button>
+            <button data-category="Actors" class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                Actors
+            </button>
+            <button data-category="Blocking & Movement" class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                Blocking & Movement
+            </button>
+            <button data-category="Emotion & Subtext" class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                Emotion & Subtext
+            </button>
+            <button data-category="Camera & Visuals" class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                Camera & Visuals
+            </button>
+            <button data-category="Experimentation" class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                Experimentation
+            </button>
+        </div>
+
+        <div id="promptsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Prompt cards will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const prompts = [
+            {
+                prompt: "A character's eyes expressing deep, internal conflict.",
+                category: "Actors",
+                lensShot: "Extreme Close-Up",
+                notes: "Focus on eye movement and dilation to show internal struggle."
+            },
+            {
+                prompt: "Show fear without a scared facial expression.",
+                category: "Actors",
+                lensShot: "Portrait",
+                notes: "Use subtle body language, a trembling hand, or a forced, rigid posture."
+            },
+            {
+                prompt: "A confident character with a shaky voice, their contradictory emotions visible on their face.",
+                category: "Actors",
+                lensShot: "Dramatic Close-Up",
+                notes: "Highlight the subtle clenching of the jaw or a strained smile."
+            },
+            {
+                prompt: "A character's body language demonstrates a clear change in their goal.",
+                category: "Actors",
+                lensShot: "Full Shot",
+                notes: "A shift from an open, forward posture to a defensive, withdrawn stance."
+            },
+            {
+                prompt: "A character's face focusing on a single tear to convey their vulnerability.",
+                category: "Actors",
+                lensShot: "Extreme Close-Up",
+                notes: "Isolate the tear with a shallow depth of field."
+            },
+            {
+                prompt: "A character's inability to meet someone's gaze due to guilt.",
+                category: "Actors",
+                lensShot: "Two-Shot",
+                notes: "Use blocking to place the guilty character slightly away, forcing them to look elsewhere."
+            },
+            {
+                prompt: "A character with a joyful smile that doesn't reach their eyes.",
+                category: "Actors",
+                lensShot: "Cinematic Portrait",
+                notes: "The smile is on the lips, but the eyes remain empty or sad."
+            },
+            {
+                prompt: "A character's tight lips to show they are hiding pain.",
+                category: "Actors",
+                lensShot: "Close-Up Portrait",
+                notes: "The lips are pressed together, a muscle twitching slightly."
+            },
+            {
+                prompt: "A character's posture slouched and movements slow to convey exhaustion.",
+                category: "Actors",
+                lensShot: "Full Shot",
+                notes: "The character drags their feet, their shoulders are hunched."
+            },
+            {
+                prompt: "A character's subtle flinch, conveying betrayal.",
+                category: "Actors",
+                lensShot: "Over-the-Shoulder Shot",
+                notes: "The flinch is a quick, almost missed movement in reaction to a statement."
+            },
+            {
+                prompt: "A character appears powerful and dominant.",
+                category: "Actors",
+                lensShot: "Low-Angle Shot",
+                notes: "The camera looks up at the character, making them seem larger than life."
+            },
+            {
+                prompt: "A character who is a master manipulator, their charm hiding a sinister intent.",
+                category: "Actors",
+                lensShot: "Neo-Noir Portrait",
+                notes: "The face is smooth and friendly, but the eyes hold a cold, calculating look."
+            },
+            {
+                prompt: "A lone figure in a crowded room, highlighting their sense of loneliness.",
+                category: "Actors",
+                lensShot: "Wide Shot",
+                notes: "The crowd is out of focus or moving in a different direction."
+            },
+            {
+                prompt: "A character moving in a spiral pattern, creating a sense of confusion.",
+                category: "Blocking & Movement",
+                lensShot: "Overhead Shot",
+                notes: "The camera is fixed, showing the character's repeated, fruitless path."
+            },
+            {
+                prompt: "Characters moving in sync until one breaks away.",
+                category: "Blocking & Movement",
+                lensShot: "Smooth Tracking Shot",
+                notes: "The camera follows the group, then pans to follow the character who leaves."
+            },
+            {
+                prompt: "A character walking towards the camera, creating a sense of dread.",
+                category: "Blocking & Movement",
+                lensShot: "Jarring Dolly Zoom Shot",
+                notes: "The background shrinks as the character approaches, disorienting the viewer."
+            },
+            {
+                prompt: "A character standing perfectly still in a moving crowd.",
+                category: "Blocking & Movement",
+                lensShot: "Dramatic Crowd Shot",
+                notes: "The camera slowly pushes in on the motionless character."
+            },
+            {
+                prompt: "A character's frantic attempts to escape from a small room.",
+                category: "Blocking & Movement",
+                lensShot: "Claustrophobic Shot",
+                notes: "The camera is inside the room, emphasizing the cramped space."
+            },
+            {
+                prompt: "A character's frantic movements as they lose control.",
+                category: "Blocking & Movement",
+                lensShot: "Shaky Handheld Shot",
+                notes: "The camera mirrors the character's unhinged state."
+            },
+            {
+                prompt: "A character's slow and deliberate movement, creating a sense of timelessness.",
+                category: "Blocking & Movement",
+                lensShot: "Slow-Motion Shot",
+                notes: "Show every step and gesture with careful precision."
+            },
+            {
+                prompt: "Two characters walking in opposite directions to create a visual divide.",
+                category: "Blocking & Movement",
+                lensShot: "Wide Shot",
+                notes: "The characters start together, then diverge at a crossroads."
+            },
+            {
+                prompt: "A character hesitating before entering a spooky room.",
+                category: "Blocking & Movement",
+                lensShot: "Tense Medium Shot",
+                notes: "Focus on the character's hand on the doorknob, showing their reluctance."
+            },
+            {
+                prompt: "A character whose movements become stiff and unnatural as they feel dehumanized.",
+                category: "Blocking & Movement",
+                lensShot: "Full Shot",
+                notes: "The character moves like a robot, with jerky, uncoordinated motions."
+            },
+            {
+                prompt: "A character walking in circles, visually representing their confusion.",
+                category: "Blocking & Movement",
+                lensShot: "Overhead Shot",
+                notes: "The shot shows them retracing their steps, unable to find a clear path."
+            },
+            {
+                prompt: "A character dancing and leaping to express their newfound freedom.",
+                category: "Blocking & Movement",
+                lensShot: "Full Shot",
+                notes: "The movements are fluid and joyful, filling the frame."
+            },
+            {
+                prompt: "A character pacing back and forth, representing their inner turmoil.",
+                category: "Blocking & Movement",
+                lensShot: "Medium Shot",
+                notes: "The camera tracks their relentless movement, mirroring their anxiety."
+            },
+            {
+                prompt: "A character's memory appearing as a floating, transparent figure.",
+                category: "Emotion & Subtext",
+                lensShot: "Wide Shot",
+                notes: "The character interacts with the memory, which only they can see."
+            },
+            {
+                prompt: "A conversation where the true meaning is shown in what is unsaid.",
+                category: "Emotion & Subtext",
+                lensShot: "Two-Shot",
+                notes: "Focus on the subtext in the actors' eyes and hands, not the dialogue."
+            },
+            {
+                prompt: "A character's silent scream, conveying their desperation.",
+                category: "Emotion & Subtext",
+                lensShot: "Extreme Close-Up",
+                notes: "Mouth is open, but no sound comes out. Focus on the raw emotion on their face."
+            },
+            {
+                prompt: "A film still showing a character's true feelings through a brief, involuntary smirk.",
+                category: "Emotion & Subtext",
+                lensShot: "Cinematic Portrait",
+                notes: "The smirk is quick, almost a flash, before the character's face returns to a neutral expression."
+            },
+            {
+                prompt: "A character's hope is visually represented by a single, persistent light source.",
+                category: "Emotion & Subtext",
+                lensShot: "Wide Shot",
+                notes: "The character is in a dark room, but a ray of light shines on them."
+            },
+            {
+                prompt: "A character's inner turmoil is conveyed by a distorted reflection.",
+                category: "Emotion & Subtext",
+                lensShot: "Close-Up",
+                notes: "The reflection in a spoon or a warped mirror shows a twisted version of their face."
+            },
+            {
+                prompt: "A character's regret is shown through their repeated actions.",
+                category: "Emotion & Subtext",
+                lensShot: "Medium Shot",
+                notes: "The character tries to rewrite a letter or rebuild a broken object, unable to get it right."
+            },
+            {
+                prompt: "A character's growing paranoia, shown by their constant glances over their shoulder.",
+                category: "Emotion & Subtext",
+                lensShot: "Medium Shot",
+                notes: "The camera follows the character's head as they nervously scan their surroundings."
+            },
+            {
+                prompt: "A character's love is shown by a slow, intimate close-up on their hands intertwining.",
+                category: "Emotion & Subtext",
+                lensShot: "Close-Up",
+                notes: "No dialogue, just the visual of their hands connecting."
+            },
+            {
+                prompt: "A character's vulnerability is shown by a sudden, protective posture.",
+                category: "Emotion & Subtext",
+                lensShot: "Full Shot",
+                notes: "The character hugs themselves or pulls their arms in close."
+            },
+            {
+                prompt: "A cinematic still with a shallow depth of field, isolating the subject against a blurry background.",
+                category: "Camera & Visuals",
+                lensShot: "Close-Up",
+                notes: "Used to draw attention to a specific character or object."
+            },
+            {
+                prompt: "A film still with a Dutch angle, creating a sense of unease and disorientation.",
+                category: "Camera & Visuals",
+                lensShot: "Full Shot",
+                notes: "The world appears to be off-kilter and unbalanced."
+            },
+            {
+                prompt: "A long, continuous take from a found-footage film with no visible cuts.",
+                category: "Camera & Visuals",
+                lensShot: "Handheld Wide Shot",
+                notes: "The camera follows the characters in real-time, building suspense."
+            },
+            {
+                prompt: "A character is framed by something in the foreground.",
+                category: "Camera & Visuals",
+                lensShot: "Dramatic Shot",
+                notes: "A door frame, a tree, or a window can frame the shot and add visual layers."
+            },
+            {
+                prompt: "A suspenseful shot through a window or keyhole, as if we are a hidden observer.",
+                category: "Camera & Visuals",
+                lensShot: "POV Shot",
+                notes: "The camera is static, and the view is restricted."
+            },
+            {
+                prompt: "A time-lapse shot showing a character's life passing by quickly.",
+                category: "Camera & Visuals",
+                lensShot: "Time-Lapse Shot",
+                notes: "Show the seasons changing, and the character aging in fast forward."
+            },
+            {
+                prompt: "A sweeping drone shot from an epic landscape film.",
+                category: "Camera & Visuals",
+                lensShot: "Drone Shot",
+                notes: "Used to show the vastness of the environment."
+            },
+            {
+                prompt: "A moody, low-key lighting shot from a thriller.",
+                category: "Camera & Visuals",
+                lensShot: "Moody Shot",
+                notes: "The scene is mostly dark, with only a few elements lit."
+            },
+            {
+                prompt: "A disjointed jump cut shot from an experimental film.",
+                category: "Camera & Visuals",
+                lensShot: "Jump Cut Shot",
+                notes: "Used to create a sense of discontinuity and unease."
+            },
+            {
+                prompt: "A dramatic rack focus shot, shifting focus from a foreground object to a background character.",
+                category: "Camera & Visuals",
+                lensShot: "Rack Focus Shot",
+                notes: "Used to change the viewer's attention and reveal a new element."
+            },
+            {
+                prompt: "A character looks small and vulnerable.",
+                category: "Camera & Visuals",
+                lensShot: "High-Angle Shot",
+                notes: "The camera looks down on the character, making them seem insignificant."
+            },
+            {
+                prompt: "A cinematic shot with deep depth of field, where everything is in focus.",
+                category: "Camera & Visuals",
+                lensShot: "Deep Focus Shot",
+                notes: "Used to show a lot of detail in the foreground and background."
+            },
+            {
+                prompt: "A scene shot entirely within a single reflective surface, like a mirror or a puddle.",
+                category: "Experimentation",
+                lensShot: "Reflective Shot",
+                notes: "The audience can only see the characters through their reflections."
+            },
+            {
+                prompt: "A cinematic still using a split diopter shot to show two planes of focus at once.",
+                category: "Experimentation",
+                lensShot: "Split Diopter Shot",
+                notes: "One character is in focus in the foreground and another is in focus in the background."
+            },
+            {
+                prompt: "A film still where the characters speak their lines in reverse order.",
+                category: "Experimentation",
+                lensShot: "Reverse Dialogue",
+                notes: "This creates a sense of disorientation and confusion for the audience."
+            },
+            {
+                prompt: "A found-footage shot from inside a closet, showing a limited perspective.",
+                category: "Experimentation",
+                lensShot: "POV Shot",
+                notes: "The camera is static and the view is restricted to a small hole."
+            },
+            {
+                prompt: "A high-concept film still where the characters' emotions are shown by colors.",
+                category: "Experimentation",
+                lensShot: "Color-Coded Emotions",
+                notes: "The background color changes to reflect the character's mood."
+            },
+            {
+                prompt: "A character's face is slowly morphing into another's.",
+                category: "Experimentation",
+                lensShot: "Surreal Cinematic Still",
+                notes: "Use visual effects to create a seamless transition."
+            },
+            {
+                prompt: "A scene where characters are speaking a different, unknown language, forcing the audience to rely on visuals.",
+                category: "Experimentation",
+                lensShot: "Visual Storytelling",
+                notes: "The audience must infer the story from the characters' actions and expressions."
+            },
+            {
+                prompt: "A cinematic still with a character's thoughts appearing as text on the screen.",
+                category: "Experimentation",
+                lensShot: "Text on Screen",
+                notes: "The text appears and disappears as the character thinks."
+            },
+            {
+                prompt: "A single continuous shot where the camera is a character, its movement part of the story.",
+                category: "Experimentation",
+                lensShot: "Single Continuous Shot",
+                notes: "The camera's movement is not just a tool, it's a character in the scene."
+            },
+            {
+                prompt: "A surreal shot where a character's shadow acts independently.",
+                category: "Experimentation",
+                lensShot: "Surreal Shot",
+                notes: "The shadow follows its own path, revealing the character's hidden desires."
+            },
+            {
+                prompt: "A cold, objective shot from a security camera POV.",
+                category: "Experimentation",
+                lensShot: "POV Shot",
+                notes: "The camera is static and the image is grainy, creating a sense of detachment."
+            },
+            {
+                prompt: "A dramatic close-up where characters are speaking in whispers.",
+                category: "Experimentation",
+                lensShot: "Close-Up",
+                notes: "The audience must lean in to hear the dialogue, creating intimacy and suspense."
+            }
+        ];
+
+        const promptsContainer = document.getElementById('promptsContainer');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        function renderPrompts(filteredPrompts) {
+            promptsContainer.innerHTML = '';
+            filteredPrompts.forEach(prompt => {
+                const card = `
+                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="font-bold text-lg text-gray-900 mb-2">${prompt.prompt}</h3>
+                        <p class="text-sm text-gray-500 mb-2">Category: <span class="font-medium text-gray-700">${prompt.category}</span></p>
+                        <p class="text-sm text-gray-500 mb-2">Lens/Shot: <span class="font-medium text-gray-700">${prompt.lensShot}</span></p>
+                        <p class="text-sm text-gray-500">Notes: <span class="font-normal text-gray-700">${prompt.notes}</span></p>
+                    </div>
+                `;
+                promptsContainer.innerHTML += card;
+            });
+        }
+
+        renderPrompts(prompts);
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Reset button styles
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-gray-900', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-800');
+                });
+                // Set active button style
+                button.classList.remove('bg-gray-200', 'text-gray-800');
+                button.classList.add('bg-gray-900', 'text-white');
+
+                const category = button.dataset.category;
+                let filtered = [];
+                if (category) {
+                    filtered = prompts.filter(p => p.category === category);
+                } else {
+                    filtered = prompts; // "All" button
+                }
+                renderPrompts(filtered);
+            });
+        });
+    </script>
+</body>
+</html>
